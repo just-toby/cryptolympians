@@ -12,9 +12,9 @@ type TokenMetadata = {
 export default (req: NextApiRequest, res: NextApiResponse) => {
   let metadata: TokenMetadata = null;
 
-  const { pid } = req.query;
+  const { id } = req.query;
 
-  switch (pid) {
+  switch (id) {
     case "0":
       metadata = {
         description: "Founder of ChainLink. Secretly Satoshi Nakamoto.",
