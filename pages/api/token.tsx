@@ -20,7 +20,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
         description: "Founder of ChainLink. Secretly Satoshi Nakamoto.",
         name: "Sergey Nazarov",
         image: "https://cryptolympians.com/sergey.mp4",
-        external_url: "https://cryptolympians.com/token/0",
+        external_url: "https://cryptolympians.com/api/token/0",
         attributes: [],
       };
       break;
@@ -29,7 +29,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
         description: "Founder of Uniswap. Insecure.",
         name: "Hayden Adams",
         image: "https://cryptolympians.com/hayden.mp4",
-        external_url: "https://cryptolympians.com/token/1",
+        external_url: "https://cryptolympians.com/api/token/1",
         attributes: [],
       };
       break;
@@ -38,7 +38,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
         description: "Founder of Binance. Rich centralization freak.",
         name: "Changpeng Zhao",
         image: "https://cryptolympians.com/cz.mp4",
-        external_url: "https://cryptolympians.com/token/2",
+        external_url: "https://cryptolympians.com/api/token/2",
         attributes: [],
       };
       break;
@@ -48,7 +48,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
           'Founder of Tron. Tried to buy Beeple: Everydays but accidentally chose the "slow" gas option.',
         name: "Justin Sun",
         image: "https://cryptolympians.com/sun.mp4",
-        external_url: "https://cryptolympians.com/token/3",
+        external_url: "https://cryptolympians.com/api/token/3",
         attributes: [],
       };
       break;
@@ -57,7 +57,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
         description: "Creator of Ethereum. Gave birth to the new world order.",
         name: "Vitalik Buterin",
         image: "https://cryptolympians.com/vitalik.mp4",
-        external_url: "https://cryptolympians.com/token/4",
+        external_url: "https://cryptolympians.com/api/token/4",
         attributes: [],
       };
       break;
