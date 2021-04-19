@@ -1,51 +1,46 @@
 import Web3Modal from "web3modal";
+import { providers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import React, { useCallback, useEffect, useState } from "react";
-import Web3 from "web3";
+import { useRouter } from "next/router";
 import { Web3ModalConfig } from "../context/Web3ModalContext";
 import { isNullOrEmpty } from "../utils/StringUtils";
+import { provider } from "web3-core";
 
 const useWeb3ModalContext: () => Web3ModalConfig = () => {
   // top level state that will be passe to the app via context in _app.tsx
-  const [web3Modal, setWeb3Modal] = useState(null);
-  const [web3, setWeb3] = useState(null);
+  const [web3Modal, setWeb3Modal] = useState<Web3Modal>(null);
+  const [provider, setProvider] = useState<providers.Web3Provider>(null);
   const [address, setAddress] = useState("");
   const [chainId, setChainId] = useState(0);
-  const [networkId, setNetworkId] = useState(0);
 
+  // next.js navigation
+  const router = useRouter();
+
+  /**
+   * Callback for connecting an account.
+   */
   const connect = useCallback(() => {
-    web3Modal.connect().then((provider) => {
-      const web3: any = new Web3(provider);
-      web3.eth.extend({
-        methods: [
-          {
-            name: "chainId",
-            call: "eth_chainId",
-            outputFormatter: web3.utils.hexToNumber,
-          },
-        ],
-      });
-      setWeb3(web3);
-
-      setupSubscriptions(provider);
-
-      web3.eth.getAccounts().then((accounts) => {
-        const address = accounts[0];
-        setAddress(address);
-      });
-      web3.eth.net.getId().then((networkId) => {
-        setNetworkId(networkId);
-      });
-      web3.eth.chainId().then((chainId) => {
-        setChainId(chainId);
-      });
+    web3Modal.connect().then(async (provider: provider) => {
+      const ethersProvider = new providers.Web3Provider(
+        provider as providers.ExternalProvider
+      );
+      setProvider(ethersProvider);
+      const address = await ethersProvider.getSigner().getAddress();
+      setAddress(address);
+      const chainId = (await ethersProvider.getNetwork()).chainId;
+      setChainId(chainId);
     });
   }, [web3Modal]);
 
   const disconnect = () => {
+    web3Modal.clearCachedProvider();
     setAddress(null);
   };
 
+  /**
+   * Initialize Web3Modal on load.
+   */
   useEffect(() => {
     const providerOptions = {
       walletconnect: {
@@ -57,7 +52,6 @@ const useWeb3ModalContext: () => Web3ModalConfig = () => {
     };
 
     const web3Modal = new Web3Modal({
-      network: "mainnet",
       cacheProvider: true,
       providerOptions,
     });
@@ -65,32 +59,31 @@ const useWeb3ModalContext: () => Web3ModalConfig = () => {
     setWeb3Modal(web3Modal);
   }, []);
 
-  const setupSubscriptions = (provider) => {
-    provider.on("disconnect", () => {
-      window.location.href = "/";
-    });
+  /**
+   * Setup event listeners on any new provider.
+   */
+  useEffect(() => {
+    if (provider == null) {
+      return;
+    }
+    provider.on("disconnect", () => {});
     provider.on("accountsChanged", async (accounts: string[]) => {
+      console.log({ accounts });
       setAddress(accounts[0]);
     });
-    provider.on("chainChanged", async (chainId: number) => {
-      const networkId = await web3.eth.net.getId();
-
-      setChainId(chainId);
-      setNetworkId(networkId);
+    // TODO: debug this, it's not triggering correctly.
+    provider.on("network", (newNetwork, oldNetwork) => {
+      console.log("network changed");
+      if (oldNetwork != null) {
+        router.reload();
+      }
     });
-
-    provider.on("networkChanged", async (networkId: number) => {
-      const chainId = await web3.eth.chainId();
-      setChainId(chainId);
-      setNetworkId(networkId);
-    });
-  };
+  }, [provider]);
 
   return {
     web3Modal,
-    web3,
+    provider,
     address,
-    networkId,
     chainId,
     connected: !isNullOrEmpty(address),
     connect,
