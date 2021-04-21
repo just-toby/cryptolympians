@@ -1,10 +1,19 @@
-import { Divider, Flex, Heading, Link, Spacer, Text } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
-import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Input,
+  Link,
+  Text,
+} from "@chakra-ui/react";
+import { BigNumber, ethers } from "ethers";
+import React, { useContext, useEffect, useState } from "react";
 import { Cryptolympians } from "../types";
 import ReactPlayer from "react-player";
-import { formatAddress } from "../utils/StringUtils";
+import { formatAddress, isNullOrEmpty } from "../utils/StringUtils";
 import { Countdown } from "./Countdown";
+import { Web3ModalContext } from "../context/Web3ModalContext";
 
 export type CurrentAuctionProps = {
   contract: Cryptolympians;
@@ -20,7 +29,11 @@ type Auction = {
 
 export function CurrentAuction({ contract }: CurrentAuctionProps) {
   const [currentAuction, setCurrentAuction] = useState<Auction>(null);
+  const [currentAuctionIndex, setCurrentAuctionIndex] = useState<number>(0);
   const [metadata, setMetadata] = useState(null);
+  const [draftBid, setDraftBid] = useState<string>("");
+
+  const { provider } = useContext(Web3ModalContext);
 
   useEffect(() => {
     (async () => {
@@ -33,6 +46,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
         .then((data) => {
           setMetadata(data);
           setCurrentAuction(currentAuction);
+          setCurrentAuctionIndex(currentAuctionIndex.toNumber());
         });
     })();
   }, [contract]);
@@ -65,9 +79,11 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
           <Heading as="h5" size="sm" color="white" marginBottom="1rem">
             Current Bid
           </Heading>
-          {/* TODO: translate price to ETH! */}
           <Heading as="h2" size="xl" color="white" marginBottom="1rem">
-            Ξ {currentAuction?.winningBid.toNumber()}
+            Ξ{" "}
+            {ethers.utils
+              .formatEther(currentAuction?.winningBid ?? 0)
+              .substring(0, 6)}
           </Heading>
           <Heading as="h4" size="md" color="white">
             by{" "}
@@ -85,6 +101,32 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
             endTimeMs={currentAuction?.endTime.mul(1000).toNumber()}
           />
         </Flex>
+      </Flex>
+      <Divider color="white" marginTop="2rem" marginBottom="2rem" />
+      <Flex direction="row" justifyContent="center" alignItems="center">
+        <Input
+          marginRight="2rem"
+          color="white"
+          placeholder="Enter bid amount (in ETH)"
+          onChange={(event) => setDraftBid(event.target.value)}
+        />
+        <Button
+          onClick={() => {
+            if (isNullOrEmpty(draftBid)) {
+              return;
+            }
+            contract
+              .connect(provider.getSigner())
+              .placeBid(currentAuctionIndex, {
+                value: ethers.utils.parseEther(draftBid),
+              });
+          }}
+          colorScheme="whiteAlpha"
+          size="lg"
+        >
+          {" "}
+          Place Bid{" "}
+        </Button>
       </Flex>
     </Flex>
   );
