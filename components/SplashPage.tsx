@@ -15,7 +15,7 @@ export function SplashPage(props: SplashPageProps) {
       </Heading>
 
       <Heading as="h2" color="white" marginTop="4rem">
-        Pay tribute to your gods. Coming soon.
+        Connect a wallet to pay tribute to your gods.
       </Heading>
     </>
   );

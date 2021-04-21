@@ -10,8 +10,8 @@ export function ErrorState() {
         Halt! There's a problem.
       </Heading>
 
-      <Heading as="h2" color="white" marginTop="4rem">
-        We couldn't find our contract. Please ensure you're connected to
+      <Heading as="h2" color="white" marginTop="4rem" textAlign="center">
+        We couldn't connect to the contract. Please ensure you're connected to
         Ethereum Mainnet.
       </Heading>
     </>

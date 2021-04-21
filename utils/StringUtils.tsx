@@ -1,4 +1,7 @@
 export function formatAddress(address: string) {
+  if (address == null || address.length === 0) {
+    return "";
+  }
   return (
     address.substring(0, 6) +
     "..." +
