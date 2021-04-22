@@ -72,7 +72,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        backgroundColor="#1b191b"
+        backgroundColor="#19181a"
         borderRadius="2rem"
         padding="4rem"
         boxShadow="dark-lg"
