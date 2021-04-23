@@ -215,7 +215,7 @@ interface CryptolympiansInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "Bid(address,uint256)": EventFragment;
+    "Bid(address,uint256,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
@@ -1085,11 +1085,12 @@ export class Cryptolympians extends Contract {
     >;
 
     Bid(
-      from: null,
-      amount: null
+      from: string | null,
+      amount: null,
+      auctionIndex: BigNumberish | null
     ): TypedEventFilter<
-      [string, BigNumber],
-      { from: string; amount: BigNumber }
+      [string, BigNumber, BigNumber],
+      { from: string; amount: BigNumber; auctionIndex: BigNumber }
     >;
 
     OwnershipTransferred(
