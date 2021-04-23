@@ -28,6 +28,7 @@ import TileContainer from "./TileContainer";
 import { Auction } from "../utils/Types";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import { SplashPage } from "./SplashPage";
+import { useNow } from "../hooks/useNow";
 
 export type CurrentAuctionProps = {
   contract: Cryptolympians;
@@ -44,8 +45,10 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [showBidHistory, setShowBidHistory] = useState<boolean>(true);
   const [pastBids, setPastBids] = useState([]);
+  const [isLive, setIsLive] = useState<boolean>(false);
 
   const { provider } = useContext(Web3ModalContext);
+  const { now } = useNow();
 
   useEffect(() => {
     (async () => {
@@ -73,6 +76,13 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
         });
     })();
   }, [contract]);
+
+  useEffect(() => {
+    if (currentAuction == null) {
+      return;
+    }
+    setIsLive(currentAuction.startTime.mul(1000).lte(now));
+  }, [currentAuction, now]);
 
   if (currentAuctionIndex < 0) {
     return (
@@ -116,17 +126,19 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
                   .formatEther(currentWinningBid ?? 0)
                   .substring(0, 6)}
               </Heading>
-              <Heading as="h4" size="md" color="white">
-                by{" "}
-                <Link
-                  isExternal={true}
-                  href={
-                    "https://etherscan.io/address/" + currentAuction?.winner
-                  }
-                >
-                  {formatAddress(currentWinner)}
-                </Link>
-              </Heading>
+              {currentAuction?.winner === contract?.address ? null : (
+                <Heading as="h4" size="md" color="white">
+                  by{" "}
+                  <Link
+                    isExternal={true}
+                    href={
+                      "https://etherscan.io/address/" + currentAuction?.winner
+                    }
+                  >
+                    {formatAddress(currentWinner)}
+                  </Link>
+                </Heading>
+              )}
             </Flex>
             <Flex direction="column" grow={1}>
               <Countdown
@@ -135,97 +147,107 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
               />
             </Flex>
           </Flex>
-          <Divider color="white" marginTop="2rem" marginBottom="2rem" />
-          <Flex direction="row" justifyContent="center" alignItems="center">
-            <Input
-              value={draftBid}
-              marginRight="2rem"
-              color="white"
-              placeholder="Enter bid amount (in ETH)"
-              onChange={(event) => setDraftBid(event.target.value)}
-              disabled={pendingBid}
-            />
-            {pendingBid ? (
-              <Spinner size="md" color="yellow" />
-            ) : (
-              <Button
-                disabled={isNullOrEmpty(draftBid)}
-                onClick={() => {
-                  if (isNullOrEmpty(draftBid)) {
-                    return;
-                  }
-                  setPendingBid(true);
-                  const bidWei = ethers.utils.parseEther(draftBid);
-                  contract
-                    .connect(provider.getSigner())
-                    .placeBid(currentAuctionIndex, {
-                      value: bidWei,
-                    })
-                    .then((tx: ContractTransaction) => {
-                      tx.wait().then(async (confirmation: ContractReceipt) => {
+          {isLive ? (
+            <Divider color="white" marginTop="2rem" marginBottom="2rem" />
+          ) : null}
+          {isLive ? (
+            <Flex direction="row" justifyContent="center" alignItems="center">
+              <Input
+                value={draftBid}
+                marginRight="2rem"
+                color="white"
+                placeholder="Enter bid amount (in ETH)"
+                onChange={(event) => setDraftBid(event.target.value)}
+                disabled={pendingBid}
+              />
+              {pendingBid ? (
+                <Spinner size="md" color="yellow" />
+              ) : (
+                <Button
+                  disabled={isNullOrEmpty(draftBid)}
+                  onClick={() => {
+                    if (isNullOrEmpty(draftBid)) {
+                      return;
+                    }
+                    setPendingBid(true);
+                    const bidWei = ethers.utils.parseEther(draftBid);
+                    contract
+                      .connect(provider.getSigner())
+                      .placeBid(currentAuctionIndex, {
+                        value: bidWei,
+                      })
+                      .then((tx: ContractTransaction) => {
+                        tx.wait().then(
+                          async (confirmation: ContractReceipt) => {
+                            setPendingBid(false);
+                            setCurrentWinningBid(bidWei);
+                            const sendingAddress = await provider
+                              .getSigner()
+                              .getAddress();
+                            setCurrentWinner(sendingAddress);
+                            setDraftBid("");
+                          }
+                        );
+                      })
+                      .catch((e) => {
                         setPendingBid(false);
-                        setCurrentWinningBid(bidWei);
-                        const sendingAddress = await provider
-                          .getSigner()
-                          .getAddress();
-                        setCurrentWinner(sendingAddress);
-                        setDraftBid("");
                       });
-                    })
-                    .catch((e) => {
-                      setPendingBid(false);
-                    });
-                }}
-                colorScheme="whiteAlpha"
-                size="lg"
-              >
-                {" "}
-                Place Bid{" "}
-              </Button>
-            )}
-          </Flex>
-          <Divider color="white" marginTop="2rem" marginBottom="2rem" />
-          <Flex direction="column">
-            <Flex
-              direction="row"
-              flexGrow={1}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Heading as="h4" size="md" color="white" marginBottom="2rem">
-                Bid History{" "}
-                {showBidHistory ? (
-                  <ArrowUpIcon
-                    color="white"
-                    onClick={() => {
-                      setShowBidHistory(false);
-                    }}
-                  />
-                ) : (
-                  <ArrowDownIcon
-                    color="white"
-                    onClick={() => {
-                      setShowBidHistory(true);
-                    }}
-                  />
-                )}
-              </Heading>
+                  }}
+                  colorScheme="whiteAlpha"
+                  size="lg"
+                >
+                  {" "}
+                  Place Bid{" "}
+                </Button>
+              )}
             </Flex>
-            <UnorderedList>
-              {showBidHistory
-                ? pastBids.map((bidData, index) => {
-                    return (
-                      <ListItem color="white">
-                        <Text key={index} color="white">
-                          Ξ {ethers.utils.formatEther(bidData.args[1])} by{" "}
-                          {formatAddress(bidData.args[0])}
-                        </Text>
-                      </ListItem>
-                    );
-                  })
-                : null}
-            </UnorderedList>
-          </Flex>
+          ) : null}
+          {isLive ? (
+            <Divider color="white" marginTop="2rem" marginBottom="2rem" />
+          ) : null}
+          {isLive ? (
+            <Flex direction="column">
+              <Flex
+                direction="row"
+                flexGrow={1}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Heading as="h4" size="md" color="white" marginBottom="2rem">
+                  Bid History{" "}
+                  {showBidHistory ? (
+                    <ArrowUpIcon
+                      color="white"
+                      onClick={() => {
+                        setShowBidHistory(false);
+                      }}
+                    />
+                  ) : (
+                    <ArrowDownIcon
+                      color="white"
+                      onClick={() => {
+                        setShowBidHistory(true);
+                      }}
+                    />
+                  )}
+                </Heading>
+              </Flex>
+              <UnorderedList>
+                {showBidHistory
+                  ? pastBids.map((bidData, index) => {
+                      return (
+                        <ListItem color="white">
+                          <Text key={index} color="white">
+                            Ξ {ethers.utils.formatEther(bidData.args[1])} by{" "}
+                            {formatAddress(bidData.args[0])}
+                          </Text>
+                        </ListItem>
+                      );
+                    })
+                  : null}
+              </UnorderedList>
+            </Flex>
+          ) : null}
         </>
       }
     />
