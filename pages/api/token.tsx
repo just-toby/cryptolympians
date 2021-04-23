@@ -41,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       metadata = {
         description: "Founder of ChainLink. Secretly Satoshi Nakamoto.",
         name: "Sergey Nazarov",
-        image: "https://cryptolympians.com/sergey.jpg",
+        image: "https://cryptolympians.com/sergey.png",
         external_url: "https://cryptolympians.com/api/token?id=0",
         attributes: [],
       };
@@ -50,7 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       metadata = {
         description: "Founder of Uniswap. Insecure.",
         name: "Hayden Adams",
-        image: "https://cryptolympians.com/hayden.jpg",
+        image: "https://cryptolympians.com/hayden.png",
         external_url: "https://cryptolympians.com/api/token?id=1",
         attributes: [],
       };
@@ -59,7 +59,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       metadata = {
         description: "Founder of Binance. Rich centralization freak.",
         name: "Changpeng Zhao",
-        image: "https://cryptolympians.com/cz.jpg",
+        image: "https://cryptolympians.com/cz.png",
         external_url: "https://cryptolympians.com/api/token?id=2",
         attributes: [],
       };
@@ -69,7 +69,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         description:
           'Founder of Tron. Tried to buy Beeple: Everydays but accidentally chose the "slow" gas option.',
         name: "Justin Sun",
-        image: "https://cryptolympians.com/sun.jpg",
+        image: "https://cryptolympians.com/sun.png",
         external_url: "https://cryptolympians.com/api/token?id=3",
         attributes: [],
       };
@@ -78,7 +78,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       metadata = {
         description: "Creator of Ethereum. Gave birth to the new world order.",
         name: "Vitalik Buterin",
-        image: "https://cryptolympians.com/vitalik.jpg",
+        image: "https://cryptolympians.com/vitalik.png",
         external_url: "https://cryptolympians.com/api/token?id=4",
         attributes: [],
       };
