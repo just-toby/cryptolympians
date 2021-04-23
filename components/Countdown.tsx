@@ -1,5 +1,6 @@
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { useNow } from "../hooks/useNow";
 
 export type CountdownProps = {
   startTimeMs: number;
@@ -7,16 +8,7 @@ export type CountdownProps = {
 };
 
 export function Countdown(props: CountdownProps) {
-  const [now, setNow] = useState(Date.now());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  const { now } = useNow();
 
   let prefix = "";
 

@@ -1,14 +1,15 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, Link as ChakraLink } from "@chakra-ui/react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import { Web3ModalContext } from "../context/Web3ModalContext";
 import { formatAddress } from "../utils/StringUtils";
+import { HeaderLink } from "./HeaderLink";
 
 export type PageContainerProps = {
   content: React.ReactNode;
+  vCenter: boolean;
 };
 
 export default function PageContainer(props: PageContainerProps) {
@@ -25,7 +26,8 @@ export default function PageContainer(props: PageContainerProps) {
       h="100%"
       minHeight="100vh"
       alignItems="center"
-      justifyContent="center"
+      paddingTop={props.vCenter ? null : "10rem"}
+      justifyContent={props.vCenter ? "center" : null}
       bgGradient={"linear(to-br, " + "#000000" + ", " + "#f28439" + ")"}
     >
       <Head>
@@ -33,29 +35,13 @@ export default function PageContainer(props: PageContainerProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Flex position="fixed" top="2.5rem" width="100%" justifyContent="center">
-        <Link href="/" passHref>
-          <ChakraLink
-            href="/"
-            color="white"
-            fontSize="lg"
-            marginRight="4rem"
-            textDecoration={router.pathname === "/" ? "underline" : null}
-          >
-            Live
-          </ChakraLink>
-        </Link>
-        <Link href="/history" passHref>
-          <ChakraLink
-            href="/history"
-            color="white"
-            fontSize="lg"
-            textDecoration={router.pathname === "/history" ? "underline" : null}
-          >
-            History
-          </ChakraLink>
-        </Link>
-      </Flex>
+      {connected ? (
+        <Flex position="fixed" top="2.5rem" width="100%" marginLeft="4rem">
+          <HeaderLink title="Live" href="/" />
+          <HeaderLink title="History" href="/history" />
+          <HeaderLink title="About" href="/about" />
+        </Flex>
+      ) : null}
 
       <Box position="fixed" top="2rem" right="2rem">
         <Button
