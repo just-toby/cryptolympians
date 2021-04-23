@@ -44,13 +44,13 @@ export function PastAuctionTile(props: PastAuctionTileProps) {
     if (auction == null) {
       return null;
     }
-    // if (props.checkLive && auction.endTime.mul(1000).gte(now)) {
-    //   return null;
-    // }
+    if (props.checkLive && auction.endTime.mul(1000).gte(now)) {
+      return null;
+    }
 
     return (
       <>
-        {/* <Image src={tokenMetadata?.image} width="4rem" height="3rem" /> */}
+        <Image src={tokenMetadata?.image} width="4rem" height="3rem" />
 
         <Text color="white">name: {tokenMetadata.name}</Text>
 

@@ -68,6 +68,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
         <>
           {metadata == null ? null : (
             <>
+              {/* TODO: use this if tokenMetadata.isVideo */}
               {/* <ReactPlayer playing={true} loop={true} url={metadata?.image} /> */}
               <Image src={metadata?.image} width="8rem" height="6rem" />
               <Heading
