@@ -126,7 +126,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
                   .formatEther(currentWinningBid ?? 0)
                   .substring(0, 6)}
               </Heading>
-              {currentAuction?.winner === contract?.address ? null : (
+              {currentWinner === contract?.address ? null : (
                 <Heading as="h4" size="md" color="white">
                   by{" "}
                   <Link
