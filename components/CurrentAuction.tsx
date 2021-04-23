@@ -8,6 +8,8 @@ import {
   Image,
   Spinner,
   Text,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
 import {
   BigNumber,
@@ -24,6 +26,7 @@ import { Countdown } from "./Countdown";
 import { Web3ModalContext } from "../context/Web3ModalContext";
 import TileContainer from "./TileContainer";
 import { Auction } from "../utils/Types";
+import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
 export type CurrentAuctionProps = {
   contract: Cryptolympians;
@@ -38,6 +41,8 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
   const [currentWinningBid, setCurrentWinningBid] = useState<BigNumberish>(0);
   const [currentWinner, setCurrentWinner] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [showBidHistory, setShowBidHistory] = useState<boolean>(true);
+  const [pastBids, setPastBids] = useState([]);
 
   const { provider } = useContext(Web3ModalContext);
 
@@ -47,6 +52,9 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
       const currentAuction = await contract.auctions(currentAuctionIndex);
       const token = currentAuction.tokenID;
       const tokenURI = await contract.tokenURI(token);
+      const bidEvents = await contract.queryFilter(
+        contract.filters.Bid(null, null, currentAuctionIndex)
+      );
       fetch(tokenURI)
         .then((response) => response.json())
         .then((data) => {
@@ -56,6 +64,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
           setLoading(false);
           setCurrentWinningBid(currentAuction?.winningBid);
           setCurrentWinner(currentAuction?.winner);
+          setPastBids(bidEvents);
         });
     })();
   }, [contract]);
@@ -104,7 +113,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
                     "https://etherscan.io/address/" + currentAuction?.winner
                   }
                 >
-                  {formatAddress(currentAuction?.winner)}
+                  {formatAddress(currentWinner)}
                 </Link>
               </Heading>
             </Flex>
@@ -163,6 +172,48 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
                 Place Bid{" "}
               </Button>
             )}
+          </Flex>
+          <Divider color="white" marginTop="2rem" marginBottom="2rem" />
+          <Flex direction="column">
+            <Flex
+              direction="row"
+              flexGrow={1}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Heading as="h4" size="md" color="white" marginBottom="2rem">
+                Bid History{" "}
+                {showBidHistory ? (
+                  <ArrowUpIcon
+                    color="white"
+                    onClick={() => {
+                      setShowBidHistory(false);
+                    }}
+                  />
+                ) : (
+                  <ArrowDownIcon
+                    color="white"
+                    onClick={() => {
+                      setShowBidHistory(true);
+                    }}
+                  />
+                )}
+              </Heading>
+            </Flex>
+            <UnorderedList>
+              {showBidHistory
+                ? pastBids.map((bidData, index) => {
+                    return (
+                      <ListItem color="white">
+                        <Text key={index} color="white">
+                          Ξ {ethers.utils.formatEther(bidData.args[1])} by{" "}
+                          {formatAddress(bidData.args[0])}
+                        </Text>
+                      </ListItem>
+                    );
+                  })
+                : null}
+            </UnorderedList>
           </Flex>
         </>
       }

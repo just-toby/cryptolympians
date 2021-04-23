@@ -43,8 +43,8 @@ export default function About() {
               marginBottom="2rem"
               marginTop="1rem"
             >
-              These tokens are an ERC721 collection and the contract can be
-              found{" "}
+              These tokens are an ERC721 collection and the verified contract
+              can be found{" "}
               <Link
                 isExternal={true}
                 href={"https://etherscan.io/address/" + contract?.address}
@@ -83,7 +83,7 @@ export default function About() {
               marginTop="1rem"
             >
               Auctions winners will be entitled to the high-quality media
-              download after claiming their token. (mp4, full rotation
+              download after claiming their token (mp4, full rotation
               animation). They will also have the option to request the media be
               served from our metadata API instead of the static image.
             </Text>
