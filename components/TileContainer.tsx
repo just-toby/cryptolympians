@@ -19,6 +19,8 @@ export default function TileContainer(props: TileContainerProps) {
         padding="4rem"
         boxShadow="dark-lg"
         style={props.tileStyle}
+        marginLeft="10rem"
+        marginRight="10rem"
       >
         {props.content}
       </Flex>

@@ -1,5 +1,4 @@
-import { Text } from "@chakra-ui/react";
-import Image from "next/image";
+import { Text, Image } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useContracts } from "../hooks/useContracts";
 import { useNow } from "../hooks/useNow";
@@ -44,13 +43,10 @@ export function PastAuctionTile(props: PastAuctionTileProps) {
     if (auction == null) {
       return null;
     }
-    if (props.checkLive && auction.endTime.mul(1000).gte(now)) {
-      return null;
-    }
 
     return (
       <>
-        <Image src={tokenMetadata?.image} width="4rem" height="3rem" />
+        <Image src={tokenMetadata?.image} maxWidth="50%" />
 
         <Text color="white">name: {tokenMetadata.name}</Text>
 
@@ -58,6 +54,10 @@ export function PastAuctionTile(props: PastAuctionTileProps) {
       </>
     );
   }, [auction, tokenMetadata]);
+
+  if (props.checkLive && auction?.endTime.mul(1000).gte(now)) {
+    return null;
+  }
 
   return <TileContainer loading={loading} content={getContent()} />;
 }

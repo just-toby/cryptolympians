@@ -110,6 +110,7 @@ export default function About() {
 
   return (
     <PageContainer
+      vCenter={true}
       content={
         <TileContainer
           tileStyle={{

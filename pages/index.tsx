@@ -21,5 +21,5 @@ export default function Home() {
     return <CurrentAuction contract={contract} />;
   };
 
-  return <PageContainer content={getContent()} />;
+  return <PageContainer vCenter={true} content={getContent()} />;
 }

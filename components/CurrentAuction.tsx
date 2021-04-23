@@ -5,7 +5,7 @@ import {
   Heading,
   Input,
   Link,
-  Skeleton,
+  Image,
   Spinner,
   Text,
 } from "@chakra-ui/react";
@@ -23,7 +23,6 @@ import { formatAddress, isNullOrEmpty } from "../utils/StringUtils";
 import { Countdown } from "./Countdown";
 import { Web3ModalContext } from "../context/Web3ModalContext";
 import TileContainer from "./TileContainer";
-import Image from "next/image";
 import { Auction } from "../utils/Types";
 
 export type CurrentAuctionProps = {
@@ -70,7 +69,7 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
             <>
               {/* TODO: use this if tokenMetadata.isVideo */}
               {/* <ReactPlayer playing={true} loop={true} url={metadata?.image} /> */}
-              <Image src={metadata?.image} width="8rem" height="6rem" />
+              <Image src={metadata?.image} maxWidth="50%" />
               <Heading
                 as="h1"
                 color="white"
