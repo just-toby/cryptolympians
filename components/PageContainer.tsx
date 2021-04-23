@@ -9,7 +9,7 @@ import { HeaderLink } from "./HeaderLink";
 
 export type PageContainerProps = {
   content: React.ReactNode;
-  vCenter: boolean;
+  vCenter?: boolean;
 };
 
 export default function PageContainer(props: PageContainerProps) {
@@ -26,7 +26,7 @@ export default function PageContainer(props: PageContainerProps) {
       h="100%"
       minHeight="100vh"
       alignItems="center"
-      paddingTop={props.vCenter ? null : "10rem"}
+      paddingTop={props.vCenter === false ? null : "10rem"}
       justifyContent={props.vCenter ? "center" : null}
       bgGradient={"linear(to-br, " + "#000000" + ", " + "#f28439" + ")"}
     >
