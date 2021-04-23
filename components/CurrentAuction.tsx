@@ -27,6 +27,7 @@ import { Web3ModalContext } from "../context/Web3ModalContext";
 import TileContainer from "./TileContainer";
 import { Auction } from "../utils/Types";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import { SplashPage } from "./SplashPage";
 
 export type CurrentAuctionProps = {
   contract: Cryptolympians;
@@ -49,6 +50,10 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
   useEffect(() => {
     (async () => {
       const currentAuctionIndex = (await contract.auctionCount()).sub(1);
+      if (currentAuctionIndex.lt(0)) {
+        setCurrentAuctionIndex(currentAuctionIndex.toNumber());
+        return;
+      }
       const currentAuction = await contract.auctions(currentAuctionIndex);
       const token = currentAuction.tokenID;
       const tokenURI = await contract.tokenURI(token);
@@ -68,6 +73,12 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
         });
     })();
   }, [contract]);
+
+  if (currentAuctionIndex < 0) {
+    return (
+      <SplashPage message="There is no live auction right now. Check the history page for past auctions!" />
+    );
+  }
 
   return (
     <TileContainer

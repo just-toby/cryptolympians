@@ -3,8 +3,7 @@ import { useContext, useMemo } from "react";
 import { Web3ModalContext } from "../context/Web3ModalContext";
 
 const CRYPTOLYMPIANS_ADDRESS = {
-  3: "0xF30d9EF3ec31558342d39869ffa467aD1E55C406", // ropsten
-  // 3: 0x6748FE15C189BcEf416B42D07016EC02202Ff42D, // ropsten with bug fix
+  3: "0xA53346A867f5716D8797c2f75200b881ef14B77F", // ropsten
 };
 
 export interface Contracts {

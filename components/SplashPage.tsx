@@ -5,7 +5,9 @@ import React, { useContext } from "react";
 import { Web3ModalContext } from "../context/Web3ModalContext";
 import { formatAddress } from "../utils/StringUtils";
 
-export type SplashPageProps = {};
+export type SplashPageProps = {
+  message: string;
+};
 
 export function SplashPage(props: SplashPageProps) {
   return (
@@ -15,7 +17,7 @@ export function SplashPage(props: SplashPageProps) {
       </Heading>
 
       <Heading as="h2" color="white" marginTop="4rem">
-        Connect a wallet to pay tribute to your gods.
+        {props.message}
       </Heading>
     </>
   );

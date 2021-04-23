@@ -13,7 +13,9 @@ export default function Home() {
 
   const getContent = () => {
     if (!connected) {
-      return <SplashPage />;
+      return (
+        <SplashPage message="Connect a wallet to pay tribute to your gods." />
+      );
     }
     if (contract == null) {
       return <ErrorState />;
