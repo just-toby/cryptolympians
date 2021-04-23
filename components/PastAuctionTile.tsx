@@ -44,9 +44,9 @@ export function PastAuctionTile(props: PastAuctionTileProps) {
     if (auction == null) {
       return null;
     }
-    if (props.checkLive && auction.endTime.mul(1000).gte(now)) {
-      return null;
-    }
+    // if (props.checkLive && auction.endTime.mul(1000).gte(now)) {
+    //   return null;
+    // }
 
     return (
       <>
