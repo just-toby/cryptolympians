@@ -239,7 +239,15 @@ export function CurrentAuction({ contract }: CurrentAuctionProps) {
                         <ListItem color="white">
                           <Text key={index} color="white">
                             Ξ {ethers.utils.formatEther(bidData.args[1])} by{" "}
-                            {formatAddress(bidData.args[0])}
+                            <Link
+                              isExternal={true}
+                              href={
+                                "https://www.etherscan.io/address/" +
+                                bidData.args[0]
+                              }
+                            >
+                              {formatAddress(bidData.args[0])}
+                            </Link>
                           </Text>
                         </ListItem>
                       );
